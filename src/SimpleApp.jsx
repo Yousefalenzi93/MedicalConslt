@@ -1,39 +1,78 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const SimpleApp = () => {
+  const [showModal, setShowModal] = useState(false)
+
+  const showLoginModal = () => setShowModal(true)
+  const hideLoginModal = () => setShowModal(false)
+
+  const showSuccessMessage = (message) => {
+    // Create success message
+    const messageEl = document.createElement('div')
+    messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50'
+    messageEl.textContent = message
+    document.body.appendChild(messageEl)
+
+    setTimeout(() => {
+      if (document.body.contains(messageEl)) {
+        document.body.removeChild(messageEl)
+      }
+    }, 3000)
+  }
+
+  const handleLogin = (e) => {
+    e.preventDefault()
+    hideLoginModal()
+    showSuccessMessage('مرحباً بك في طريقتي العلاجي!')
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
+    <div className="min-h-screen bg-gray-50 font-arabic">
       {/* Header */}
-      <header className="bg-white/10 backdrop-blur-sm">
+      <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-blue-600 font-bold text-xl">م</span>
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">ط</span>
               </div>
-              <h1 className="mr-3 text-xl font-bold text-white">طريقتي العلاجي</h1>
+              <h1 className="mr-3 text-xl font-bold text-gray-800">طريقتي العلاجي</h1>
             </div>
-            <button className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-2 rounded-lg transition-colors font-semibold">
-              دخول الأطباء
-            </button>
+            <div className="flex items-center space-x-4 space-x-reverse">
+              <button className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                🌐 العربية
+              </button>
+              <button
+                onClick={showLoginModal}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+              >
+                دخول الأطباء
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-4 text-center text-white">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
+      <section className="bg-gradient-to-br from-blue-500 to-blue-700 text-white py-20">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
             طريقتي العلاجي
           </h2>
           <p className="text-xl mb-8 text-blue-100">
             منصة التعاون الطبي المتقدمة
           </p>
           <div className="space-x-4 space-x-reverse">
-            <button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg">
+            <button
+              onClick={showLoginModal}
+              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg"
+            >
               انضم كطبيب
             </button>
-            <button className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg font-semibold transition-colors">
+            <button
+              onClick={() => showSuccessMessage('تعرف على المنصة قريباً!')}
+              className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg font-semibold transition-colors"
+            >
               تعرف على المنصة
             </button>
           </div>
@@ -151,6 +190,72 @@ const SimpleApp = () => {
           <p className="text-gray-500 text-sm">© 2024 طريقتي العلاجي - جميع الحقوق محفوظة</p>
         </div>
       </footer>
+
+      {/* Login Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-2xl">ط</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800">دخول الأطباء</h3>
+              <p className="text-gray-600 mt-2">انضم إلى طريقتي العلاجي</p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">رقم الترخيص الطبي</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="رقم الترخيص"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+                <input
+                  type="password"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="flex items-center">
+                  <input type="checkbox" className="rounded border-gray-300 text-blue-600" />
+                  <span className="mr-2 text-sm text-gray-600">تذكرني</span>
+                </label>
+                <a href="#" className="text-sm text-blue-600 hover:text-blue-500">نسيت كلمة المرور؟</a>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors"
+              >
+                دخول المنصة
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                طبيب جديد؟
+                <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">طلب انضمام</a>
+              </p>
+            </div>
+
+            <button
+              onClick={hideLoginModal}
+              className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
