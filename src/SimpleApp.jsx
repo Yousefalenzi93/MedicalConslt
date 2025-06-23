@@ -1,10 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const SimpleApp = () => {
   const [showModal, setShowModal] = useState(false)
+  const [showRegisterModal, setShowRegisterModal] = useState(false)
+  const [currentLanguage, setCurrentLanguage] = useState('ar')
 
   const showLoginModal = () => setShowModal(true)
   const hideLoginModal = () => setShowModal(false)
+  const showRegisterModal = () => {
+    setShowModal(false)
+    setShowRegisterModal(true)
+  }
+  const hideRegisterModal = () => setShowRegisterModal(false)
+
+  const toggleLanguage = () => {
+    const newLang = currentLanguage === 'ar' ? 'en' : 'ar'
+    setCurrentLanguage(newLang)
+    showSuccessMessage(newLang === 'ar' ? 'تم التبديل للعربية' : 'Switched to English')
+  }
+
+  const scrollToServices = () => {
+    const servicesSection = document.getElementById('services')
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   const showSuccessMessage = (message) => {
     // Create success message
@@ -22,9 +42,45 @@ const SimpleApp = () => {
 
   const handleLogin = (e) => {
     e.preventDefault()
-    hideLoginModal()
-    showSuccessMessage('مرحباً بك في طريقتي العلاجي!')
+    const formData = new FormData(e.target)
+    const license = formData.get('license')
+    const password = formData.get('password')
+
+    if (license && password) {
+      hideLoginModal()
+      showSuccessMessage('مرحباً بك في طريقتي العلاجي!')
+      e.target.reset()
+    }
   }
+
+  const handleRegister = (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const name = formData.get('name')
+    const email = formData.get('email')
+    const license = formData.get('license')
+    const specialty = formData.get('specialty')
+
+    if (name && email && license && specialty) {
+      hideRegisterModal()
+      showSuccessMessage('تم إرسال طلب الانضمام بنجاح! سيتم مراجعته خلال 24 ساعة.')
+      e.target.reset()
+    }
+  }
+
+  const handleForgotPassword = () => {
+    hideLoginModal()
+    showSuccessMessage('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني')
+  }
+
+  // Welcome message on load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      showSuccessMessage('مرحباً بك في طريقتي العلاجي!')
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 font-arabic">
@@ -39,8 +95,11 @@ const SimpleApp = () => {
               <h1 className="mr-3 text-xl font-bold text-gray-800">طريقتي العلاجي</h1>
             </div>
             <div className="flex items-center space-x-4 space-x-reverse">
-              <button className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-                🌐 العربية
+              <button
+                onClick={toggleLanguage}
+                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                🌐 {currentLanguage === 'ar' ? 'العربية' : 'English'}
               </button>
               <button
                 onClick={showLoginModal}
@@ -70,7 +129,7 @@ const SimpleApp = () => {
               انضم كطبيب
             </button>
             <button
-              onClick={() => showSuccessMessage('تعرف على المنصة قريباً!')}
+              onClick={scrollToServices}
               className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg font-semibold transition-colors"
             >
               تعرف على المنصة
@@ -80,7 +139,7 @@ const SimpleApp = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 bg-white">
+      <section id="services" className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-800 mb-4">خدمات المنصة للأطباء</h3>
@@ -208,6 +267,7 @@ const SimpleApp = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">رقم الترخيص الطبي</label>
                 <input
                   type="text"
+                  name="license"
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="رقم الترخيص"
@@ -218,6 +278,7 @@ const SimpleApp = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
                 <input
                   type="password"
+                  name="password"
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="••••••••"
@@ -226,10 +287,16 @@ const SimpleApp = () => {
 
               <div className="flex items-center justify-between">
                 <label className="flex items-center">
-                  <input type="checkbox" className="rounded border-gray-300 text-blue-600" />
+                  <input type="checkbox" name="remember" className="rounded border-gray-300 text-blue-600" />
                   <span className="mr-2 text-sm text-gray-600">تذكرني</span>
                 </label>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-500">نسيت كلمة المرور؟</a>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-sm text-blue-600 hover:text-blue-500"
+                >
+                  نسيت كلمة المرور؟
+                </button>
               </div>
 
               <button
@@ -243,12 +310,152 @@ const SimpleApp = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 طبيب جديد؟
-                <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">طلب انضمام</a>
+                <button
+                  type="button"
+                  onClick={showRegisterModal}
+                  className="text-blue-600 hover:text-blue-500 font-medium underline"
+                >
+                  طلب انضمام
+                </button>
               </p>
             </div>
 
             <button
               onClick={hideLoginModal}
+              className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Register Modal */}
+      {showRegisterModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-2xl">+</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800">طلب انضمام جديد</h3>
+              <p className="text-gray-600 mt-2">انضم إلى شبكة الأطباء المهنية</p>
+            </div>
+
+            <form onSubmit={handleRegister} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="د. أحمد محمد"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="doctor@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">رقم الترخيص الطبي</label>
+                <input
+                  type="text"
+                  name="license"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="رقم الترخيص"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">التخصص</label>
+                <select
+                  name="specialty"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                >
+                  <option value="">اختر التخصص</option>
+                  <option value="general">طب عام</option>
+                  <option value="cardiology">طب القلب</option>
+                  <option value="neurology">طب الأعصاب</option>
+                  <option value="pediatrics">طب الأطفال</option>
+                  <option value="orthopedics">جراحة العظام</option>
+                  <option value="ophthalmology">طب العيون</option>
+                  <option value="dentistry">طب الأسنان</option>
+                  <option value="dermatology">طب الجلدية</option>
+                  <option value="psychiatry">الطب النفسي</option>
+                  <option value="other">تخصص آخر</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="+966 50 123 4567"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">المستشفى/العيادة</label>
+                <input
+                  type="text"
+                  name="workplace"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="مستشفى الملك فيصل التخصصي"
+                />
+              </div>
+
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  name="terms"
+                  required
+                  className="mt-1 rounded border-gray-300 text-green-600"
+                />
+                <span className="mr-2 text-sm text-gray-600">
+                  أوافق على <a href="#" className="text-green-600 hover:text-green-500">شروط الاستخدام</a> و
+                  <a href="#" className="text-green-600 hover:text-green-500">سياسة الخصوصية</a>
+                </span>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition-colors"
+              >
+                إرسال طلب الانضمام
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                لديك حساب بالفعل؟
+                <button
+                  type="button"
+                  onClick={() => {
+                    hideRegisterModal()
+                    showLoginModal()
+                  }}
+                  className="text-blue-600 hover:text-blue-500 font-medium underline"
+                >
+                  تسجيل الدخول
+                </button>
+              </p>
+            </div>
+
+            <button
+              onClick={hideRegisterModal}
               className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl"
             >
               ×

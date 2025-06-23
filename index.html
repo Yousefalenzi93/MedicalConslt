@@ -369,7 +369,7 @@
                         <input type="checkbox" class="rounded border-gray-300 text-medical-600">
                         <span class="mr-2 text-sm text-gray-600">تذكرني</span>
                     </label>
-                    <a href="#" class="text-sm text-medical-600 hover:text-medical-500">نسيت كلمة المرور؟</a>
+                    <button type="button" onclick="handleForgotPassword()" class="text-sm text-medical-600 hover:text-medical-500">نسيت كلمة المرور؟</button>
                 </div>
                 
                 <button type="submit" class="w-full bg-medical-600 hover:bg-medical-700 text-white py-2 rounded-lg font-medium transition-colors">
@@ -379,12 +379,92 @@
             
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
-                    طبيب جديد؟ 
-                    <a href="#" class="text-medical-600 hover:text-medical-500 font-medium">طلب انضمام</a>
+                    طبيب جديد؟
+                    <button onclick="showRegisterModal()" class="text-medical-600 hover:text-medical-500 font-medium underline">طلب انضمام</button>
                 </p>
             </div>
             
             <button onclick="hideLoginModal()" class="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl">
+                ×
+            </button>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white font-bold text-2xl">+</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800">طلب انضمام جديد</h3>
+                <p class="text-gray-600 mt-2">انضم إلى شبكة الأطباء المهنية</p>
+            </div>
+
+            <form onsubmit="handleRegister(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
+                    <input type="text" id="regName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="د. أحمد محمد">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+                    <input type="email" id="regEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="doctor@example.com">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">رقم الترخيص الطبي</label>
+                    <input type="text" id="regLicense" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="رقم الترخيص">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">التخصص</label>
+                    <select id="regSpecialty" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <option value="">اختر التخصص</option>
+                        <option value="general">طب عام</option>
+                        <option value="cardiology">طب القلب</option>
+                        <option value="neurology">طب الأعصاب</option>
+                        <option value="pediatrics">طب الأطفال</option>
+                        <option value="orthopedics">جراحة العظام</option>
+                        <option value="ophthalmology">طب العيون</option>
+                        <option value="dentistry">طب الأسنان</option>
+                        <option value="dermatology">طب الجلدية</option>
+                        <option value="psychiatry">الطب النفسي</option>
+                        <option value="other">تخصص آخر</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="regPhone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="+966 50 123 4567">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">المستشفى/العيادة</label>
+                    <input type="text" id="regWorkplace" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="مستشفى الملك فيصل التخصصي">
+                </div>
+
+                <div class="flex items-start">
+                    <input type="checkbox" id="regTerms" required class="mt-1 rounded border-gray-300 text-green-600">
+                    <span class="mr-2 text-sm text-gray-600">
+                        أوافق على <a href="#" class="text-green-600 hover:text-green-500">شروط الاستخدام</a> و
+                        <a href="#" class="text-green-600 hover:text-green-500">سياسة الخصوصية</a>
+                    </span>
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition-colors">
+                    إرسال طلب الانضمام
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    لديك حساب بالفعل؟
+                    <button onclick="switchToLogin()" class="text-medical-600 hover:text-medical-500 font-medium underline">تسجيل الدخول</button>
+                </p>
+            </div>
+
+            <button onclick="hideRegisterModal()" class="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl">
                 ×
             </button>
         </div>
@@ -402,6 +482,21 @@
             document.getElementById('loginModal').classList.remove('flex');
         }
 
+        function showRegisterModal() {
+            document.getElementById('registerModal').classList.remove('hidden');
+            document.getElementById('registerModal').classList.add('flex');
+        }
+
+        function hideRegisterModal() {
+            document.getElementById('registerModal').classList.add('hidden');
+            document.getElementById('registerModal').classList.remove('flex');
+        }
+
+        function switchToLogin() {
+            hideRegisterModal();
+            showLoginModal();
+        }
+
         function scrollToServices() {
             document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
         }
@@ -410,7 +505,7 @@
             event.preventDefault();
             const license = document.getElementById('license').value;
             const password = document.getElementById('password').value;
-            
+
             if (license && password) {
                 hideLoginModal();
                 showSuccessMessage('مرحباً بك في طريقتي العلاجي!');
@@ -419,12 +514,46 @@
             }
         }
 
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const license = document.getElementById('regLicense').value;
+            const specialty = document.getElementById('regSpecialty').value;
+            const terms = document.getElementById('regTerms').checked;
+
+            if (name && email && license && specialty && terms) {
+                hideRegisterModal();
+                showSuccessMessage('تم إرسال طلب الانضمام بنجاح! سيتم مراجعته خلال 24 ساعة.');
+                // Clear form
+                document.getElementById('regName').value = '';
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regLicense').value = '';
+                document.getElementById('regSpecialty').value = '';
+                document.getElementById('regPhone').value = '';
+                document.getElementById('regWorkplace').value = '';
+                document.getElementById('regTerms').checked = false;
+            }
+        }
+
         function showDemo() {
             showSuccessMessage('جولة تعريفية قريباً!');
         }
 
         function toggleLanguage() {
-            showSuccessMessage('تبديل اللغة قريباً!');
+            const currentLang = document.querySelector('[onclick="toggleLanguage()"]').textContent;
+            if (currentLang.includes('العربية')) {
+                document.querySelector('[onclick="toggleLanguage()"]').textContent = '🌐 English';
+                showSuccessMessage('Switched to English');
+            } else {
+                document.querySelector('[onclick="toggleLanguage()"]').textContent = '🌐 العربية';
+                showSuccessMessage('تم التبديل للعربية');
+            }
+        }
+
+        function handleForgotPassword() {
+            hideLoginModal();
+            showSuccessMessage('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
         }
 
         function showSuccessMessage(message) {
@@ -439,10 +568,16 @@
             }, 3000);
         }
 
-        // Close modal when clicking outside
+        // Close modals when clicking outside
         document.getElementById('loginModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 hideLoginModal();
+            }
+        });
+
+        document.getElementById('registerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideRegisterModal();
             }
         });
 
