@@ -1,3 +1,4 @@
 # Netlify redirects file
-# Handle client-side routing
-/*    /index.html   200
+# Redirect to working version
+/    /doctors-platform.html   200
+/*   /doctors-platform.html   200
