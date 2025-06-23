@@ -11,10 +11,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
-<<<<<<< HEAD
     target: 'esnext',
-=======
->>>>>>> 4da21e65b57ef508e0beb6d7d4541aa174316e11
     rollupOptions: {
       output: {
         manualChunks: {
