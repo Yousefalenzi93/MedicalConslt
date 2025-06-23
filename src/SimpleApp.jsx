@@ -11,7 +11,7 @@ const SimpleApp = () => {
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
                 <span className="text-blue-600 font-bold text-xl">م</span>
               </div>
-              <h1 className="mr-3 text-xl font-bold text-white">منصة التعاون الطبي</h1>
+              <h1 className="mr-3 text-xl font-bold text-white">طريقتي العلاجي</h1>
             </div>
             <button className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-2 rounded-lg transition-colors font-semibold">
               دخول الأطباء
@@ -24,10 +24,10 @@ const SimpleApp = () => {
       <section className="py-20">
         <div className="max-w-6xl mx-auto px-4 text-center text-white">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            منصة التعاون الطبي المتقدمة
+            طريقتي العلاجي
           </h2>
           <p className="text-xl mb-8 text-blue-100">
-            شبكة تواصل احترافية للأطباء والعاملين في المجال الصحي لتبادل الخبرات والاستشارات
+            منصة التعاون الطبي المتقدمة
           </p>
           <div className="space-x-4 space-x-reverse">
             <button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg">
@@ -110,9 +110,9 @@ const SimpleApp = () => {
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-white text-2xl">🏥</span>
             </div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">منصة التعاون الطبي جاهزة!</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">طريقتي العلاجية جاهزة!</h3>
             <p className="text-gray-600 mb-6">
-              انضم إلى شبكة الأطباء والعاملين في المجال الصحي لتبادل الخبرات والتطوير المهني.
+              انضم إلى شبكة الأطباء والعاملين في المجال الصحي لتطوير طرق العلاج وتبادل الخبرات.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="bg-blue-50 p-4 rounded-lg">
@@ -145,10 +145,10 @@ const SimpleApp = () => {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">ط</span>
             </div>
-            <span className="mr-2 text-xl font-bold">منصة التعاون الطبي</span>
+            <span className="mr-2 text-xl font-bold">طريقتي العلاجي</span>
           </div>
           <p className="text-gray-400 mb-4">شبكة مهنية للأطباء والعاملين في المجال الصحي</p>
-          <p className="text-gray-500 text-sm">© 2024 منصة التعاون الطبي - جميع الحقوق محفوظة</p>
+          <p className="text-gray-500 text-sm">© 2024 طريقتي العلاجي - جميع الحقوق محفوظة</p>
         </div>
       </footer>
     </div>
