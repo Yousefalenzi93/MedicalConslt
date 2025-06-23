@@ -1,25 +1,31 @@
-import { format, formatDistanceToNow, isToday, isYesterday } from 'date-fns'
-import { ar, enUS } from 'date-fns/locale'
+// Date formatting utilities - simplified version
+// import { format, formatDistanceToNow, isToday, isYesterday } from 'date-fns'
+// import { ar, enUS } from 'date-fns/locale'
 
-// Date formatting utilities
+// Date formatting utilities - simplified
 export const formatDate = (date, formatStr = 'dd/MM/yyyy', locale = 'ar') => {
   if (!date) return ''
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  const localeObj = locale === 'ar' ? ar : enUS
-  return format(dateObj, formatStr, { locale: localeObj })
+  return dateObj.toLocaleDateString(locale === 'ar' ? 'ar-SA' : 'en-US')
 }
 
 export const formatRelativeTime = (date, locale = 'ar') => {
   if (!date) return ''
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  const localeObj = locale === 'ar' ? ar : enUS
-  
-  if (isToday(dateObj)) {
-    return format(dateObj, 'HH:mm', { locale: localeObj })
-  } else if (isYesterday(dateObj)) {
-    return locale === 'ar' ? 'أمس' : 'Yesterday'
+  const now = new Date()
+  const diffInHours = Math.floor((now - dateObj) / (1000 * 60 * 60))
+
+  if (diffInHours < 1) {
+    return locale === 'ar' ? 'الآن' : 'Now'
+  } else if (diffInHours < 24) {
+    return `${diffInHours} ${locale === 'ar' ? 'ساعة' : 'hours ago'}`
   } else {
-    return formatDistanceToNow(dateObj, { addSuffix: true, locale: localeObj })
+    const diffInDays = Math.floor(diffInHours / 24)
+    if (diffInDays === 1) {
+      return locale === 'ar' ? 'أمس' : 'Yesterday'
+    } else {
+      return `${diffInDays} ${locale === 'ar' ? 'أيام' : 'days ago'}`
+    }
   }
 }
 
