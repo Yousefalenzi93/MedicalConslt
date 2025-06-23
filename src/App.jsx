@@ -71,11 +71,21 @@ const AppContent = () => {
 }
 
 function App() {
+<<<<<<< HEAD
   // Set document direction for Arabic
   React.useEffect(() => {
     document.documentElement.dir = 'rtl'
     document.documentElement.lang = 'ar'
   }, [])
+=======
+  const { i18n } = useTranslation()
+
+  // Set document direction based on language
+  React.useEffect(() => {
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.lang = i18n.language
+  }, [i18n.language])
+>>>>>>> 4da21e65b57ef508e0beb6d7d4541aa174316e11
 
   return (
     <ThemeProvider>
