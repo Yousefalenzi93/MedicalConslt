@@ -85,6 +85,9 @@
                 <button onclick="adminDemo()" class="bg-red-600 text-white hover:bg-red-700 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg">
                     ⚙️ تجربة سريعة - مدير
                 </button>
+                <a href="admin-login.html" class="bg-gray-600 text-white hover:bg-gray-700 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg inline-block text-center">
+                    🔐 دخول المدير المباشر
+                </a>
                 <button onclick="scrollToServices()" class="border-2 border-white text-white hover:bg-white hover:text-medical-600 px-8 py-3 rounded-lg font-semibold transition-colors">
                     تعرف على المنصة
                 </button>
@@ -570,7 +573,20 @@
 
                     // Check if admin
                     if (license === 'ADMIN001' && password === 'admin123') {
+                        // حفظ بيانات المدير
+                        const adminUser = {
+                            name: 'مدير المنصة',
+                            license: 'ADMIN001',
+                            email: 'admin@tariqi-alilaji.com',
+                            phone: '+966 11 123 4567',
+                            userType: 'admin',
+                            specialty: 'إدارة النظام'
+                        };
+
+                        localStorage.setItem('currentUser', JSON.stringify(adminUser));
+                        localStorage.setItem('userType', 'admin');
                         sessionStorage.setItem('userType', 'admin');
+
                         showSuccessMessage(`مرحباً بك ${demoAccount.name} - مدير النظام`);
                         setTimeout(() => {
                             window.location.href = 'admin-dashboard.html';

@@ -1,4 +1,22 @@
-# Netlify redirects file
-# Redirect to working version
-/    /doctors-platform.html   200
-/*   /doctors-platform.html   200
+# Netlify redirects file for طريقتي العلاجي
+
+# Admin dashboard direct access
+/admin-dashboard.html  /admin-dashboard.html  200
+/admin-login.html      /admin-login.html      200
+
+# Doctor dashboard
+/dashboard.html        /dashboard.html        200
+
+# Profile page
+/profile.html          /profile.html          200
+
+# Test pages
+/test-login.html       /test-login.html       200
+/firebase-setup.html   /firebase-setup.html   200
+
+# Main pages
+/index.html            /index.html            200
+
+# Default redirect to main page
+/    /index.html   200
+/*   /index.html   200

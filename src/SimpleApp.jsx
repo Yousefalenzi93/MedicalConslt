@@ -28,9 +28,25 @@ const SimpleApp = () => {
 
   const navigateTo = (page) => setCurrentPage(page)
   const logout = () => {
+    console.log('🚪 تسجيل الخروج...')
+
+    // مسح بيانات المستخدم
     setCurrentUser(null)
     setCurrentPage('home')
+
+    // مسح localStorage
+    localStorage.removeItem('currentUser')
+    localStorage.removeItem('userType')
+
+    // مسح sessionStorage
+    sessionStorage.removeItem('userType')
+
     showSuccessMessage('تم تسجيل الخروج بنجاح')
+
+    // العودة للصفحة الرئيسية
+    setTimeout(() => {
+      window.location.href = 'index.html'
+    }, 1000)
   }
 
   const toggleLanguage = () => {
@@ -90,75 +106,121 @@ const SimpleApp = () => {
     const license = formData.get('license')
     const password = formData.get('password')
 
+    console.log('🔐 محاولة تسجيل الدخول:', { license, password: '***' })
+
     if (license && password) {
       try {
-        // محاولة تسجيل الدخول باستخدام Firebase
+        // جرب الحسابات التجريبية أولاً (للتطوير)
+        const demoAccount = demoAccounts.find(acc => acc.license === license && acc.password === password)
+
+        if (demoAccount) {
+          console.log('✅ تم العثور على حساب تجريبي:', demoAccount.name)
+
+          if (demoAccount.userType === 'admin') {
+            // Admin login
+            const adminUser = {
+              ...demoAccount,
+              email: 'admin@tariqi-alilaji.com',
+              phone: '+966 11 123 4567',
+              userType: 'admin'
+            }
+            setCurrentUser(adminUser)
+            hideLoginModal()
+            showSuccessMessage(`مرحباً بك ${demoAccount.name} - مدير النظام`)
+
+            // توجيه للمدير
+            setTimeout(() => {
+              window.location.href = 'admin-dashboard.html'
+            }, 1500)
+
+          } else {
+            // Doctor login
+            const doctorUser = {
+              ...demoAccount,
+              email: `${demoAccount.name.replace('د. ', '').replace(' ', '.')}@hospital.com`,
+              phone: '+966 50 123 4567',
+              hospital: 'مستشفى الملك فيصل التخصصي',
+              experience: '10 سنوات',
+              bio: `طبيب متخصص في ${demoAccount.specialty} مع خبرة واسعة في التشخيص والعلاج.`,
+              userType: 'doctor'
+            }
+            setCurrentUser(doctorUser)
+            hideLoginModal()
+            showSuccessMessage(`مرحباً بك ${demoAccount.name} - ${demoAccount.specialty}`)
+
+            // حفظ بيانات المستخدم في localStorage
+            localStorage.setItem('currentUser', JSON.stringify(doctorUser))
+            localStorage.setItem('userType', 'doctor')
+
+            // توجيه للطبيب
+            setTimeout(() => {
+              window.location.href = 'dashboard.html'
+            }, 1500)
+          }
+
+          e.target.reset()
+          return
+        }
+
+        // إذا لم يتم العثور على حساب تجريبي، جرب Firebase
+        console.log('🔥 محاولة Firebase Authentication...')
         const result = await authenticateUser(license, password)
 
         if (result.success) {
+          console.log('✅ Firebase authentication نجح:', result.userType)
+
           if (result.userType === 'admin') {
             // Admin login
-            setCurrentUser({
+            const adminUser = {
               name: 'مدير المنصة',
               license: 'ADMIN001',
               email: 'admin@tariqi-alilaji.com',
               phone: '+966 11 123 4567',
               userType: 'admin',
               specialty: 'إدارة النظام'
-            })
+            }
+            setCurrentUser(adminUser)
             hideLoginModal()
-            setCurrentPage('admin-dashboard')
             showSuccessMessage('مرحباً بك مدير المنصة - مدير النظام')
+
+            localStorage.setItem('currentUser', JSON.stringify(adminUser))
+            localStorage.setItem('userType', 'admin')
+
+            setTimeout(() => {
+              window.location.href = 'admin-dashboard.html'
+            }, 1500)
+
           } else {
             // Doctor login
             const doctor = result.doctor
-            setCurrentUser({
+            const doctorUser = {
               ...doctor,
               userType: 'doctor'
-            })
+            }
+            setCurrentUser(doctorUser)
             hideLoginModal()
-            setCurrentPage('dashboard')
             showSuccessMessage(`مرحباً بك ${doctor.name} - ${doctor.specialty}`)
+
+            localStorage.setItem('currentUser', JSON.stringify(doctorUser))
+            localStorage.setItem('userType', 'doctor')
+
+            setTimeout(() => {
+              window.location.href = 'dashboard.html'
+            }, 1500)
           }
+
           e.target.reset()
         } else {
-          // فشل تسجيل الدخول - جرب الحسابات التجريبية
-          const demoAccount = demoAccounts.find(acc => acc.license === license && acc.password === password)
-
-          if (demoAccount) {
-            if (demoAccount.userType === 'admin') {
-              setCurrentUser({
-                ...demoAccount,
-                email: 'admin@tariqi-alilaji.com',
-                phone: '+966 11 123 4567',
-                userType: 'admin'
-              })
-              hideLoginModal()
-              setCurrentPage('admin-dashboard')
-              showSuccessMessage(`مرحباً بك ${demoAccount.name} - مدير النظام (تجريبي)`)
-            } else {
-              setCurrentUser({
-                ...demoAccount,
-                email: `${demoAccount.name.replace('د. ', '').replace(' ', '.')}@hospital.com`,
-                phone: '+966 50 123 4567',
-                hospital: 'مستشفى الملك فيصل التخصصي',
-                experience: '10 سنوات',
-                bio: `طبيب متخصص في ${demoAccount.specialty} مع خبرة واسعة في التشخيص والعلاج.`,
-                userType: 'doctor'
-              })
-              hideLoginModal()
-              setCurrentPage('dashboard')
-              showSuccessMessage(`مرحباً بك ${demoAccount.name} - ${demoAccount.specialty} (تجريبي)`)
-            }
-            e.target.reset()
-          } else {
-            showErrorMessage(result.error || 'خطأ في تسجيل الدخول')
-          }
+          console.error('❌ فشل Firebase authentication:', result.error)
+          showErrorMessage(result.error || 'خطأ في تسجيل الدخول')
         }
+
       } catch (error) {
-        console.error('خطأ في تسجيل الدخول:', error)
-        showErrorMessage('حدث خطأ أثناء تسجيل الدخول')
+        console.error('❌ خطأ في تسجيل الدخول:', error)
+        showErrorMessage('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.')
       }
+    } else {
+      showErrorMessage('يرجى إدخال رقم الترخيص وكلمة المرور')
     }
   }
 
