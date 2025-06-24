@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "mkdir -p dist && cp *.html dist/ && cp -r public/* dist/ 2>/dev/null || true && echo 'Static files built for Vercel'",
+    "vercel-build": "mkdir -p dist && cp *.html dist/ && cp -r public/* dist/ 2>/dev/null || true && echo 'Vercel build completed'",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "echo 'Static files - no server needed'"
   },
   "engines": {
     "node": ">=18.0.0",

@@ -1,0 +1,103 @@
+{
+  "version": 2,
+  "name": "tariqi-alilaji-medical",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "buildCommand": "mkdir -p dist && cp *.html dist/ && cp -r public/* dist/ 2>/dev/null || true && echo 'Static files copied to dist'",
+  "outputDirectory": "dist",
+  "installCommand": "echo 'No dependencies to install'",
+  "devCommand": "echo 'Development server not needed for static files'",
+  "framework": null,
+  "routes": [
+    {
+      "src": "/admin-dashboard.html",
+      "dest": "/admin-dashboard.html"
+    },
+    {
+      "src": "/admin-login.html",
+      "dest": "/admin-login.html"
+    },
+    {
+      "src": "/dashboard.html",
+      "dest": "/dashboard.html"
+    },
+    {
+      "src": "/profile.html",
+      "dest": "/profile.html"
+    },
+    {
+      "src": "/test-login.html",
+      "dest": "/test-login.html"
+    },
+    {
+      "src": "/firebase-setup.html",
+      "dest": "/firebase-setup.html"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/admin-dashboard.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/admin-login.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "NODE_VERSION": "18"
+  },
+  "functions": {},
+  "regions": ["iad1"],
+  "public": false
+}

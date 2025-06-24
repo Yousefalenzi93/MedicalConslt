@@ -1,0 +1,151 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs (keep dist for deployment)
+# dist/
+.vite/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Netlify folder (not needed for Vercel)
+.netlify
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Development files
+src/
+vite.config.js
+tailwind.config.js
+postcss.config.js
+
+# Documentation (optional - remove if you want docs deployed)
+*.md
+CHANGELOG.md
+README.md
+FEATURES.md
+FIREBASE_GUIDE.md
+DEPLOYMENT_GUIDE.md
+LOGIN_FIX_GUIDE.md
+ADMIN_ACCESS_FIX.md
+NETLIFY_FIX.md
+DIST_ERROR_FIX.md
+WRONG_REPO_FIX.md
+
+# Build scripts
+build.sh
+build-vercel.sh
+install-firebase.bat
+install-firebase.sh
+fix-*.bat
+fix-*.sh
+push-to-github.bat
+push-to-github.sh
+
+# Test files (optional)
+test-*.html
+minimal-test.html
+simple-*.html
+working-demo.html
+
+# Netlify specific files (not needed for Vercel)
+netlify.toml
+_redirects
