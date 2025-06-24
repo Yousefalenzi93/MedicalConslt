@@ -75,9 +75,12 @@
             <p class="text-xl mb-8 text-blue-100">
                 منصة التعاون الطبي المتقدمة
             </p>
-            <div class="space-x-4 space-x-reverse">
+            <div class="space-x-4 space-x-reverse flex flex-wrap justify-center gap-4">
                 <button onclick="showLoginModal()" class="bg-white text-medical-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors">
                     انضم كطبيب
+                </button>
+                <button onclick="quickDemo()" class="bg-green-600 text-white hover:bg-green-700 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg">
+                    🧪 تجربة سريعة
                 </button>
                 <button onclick="scrollToServices()" class="border-2 border-white text-white hover:bg-white hover:text-medical-600 px-8 py-3 rounded-lg font-semibold transition-colors">
                     تعرف على المنصة
@@ -377,6 +380,35 @@
                 </button>
             </form>
             
+            <!-- Demo Accounts Section -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">🧪 حسابات تجريبية للاختبار:</h4>
+                <div class="grid grid-cols-1 gap-2 text-xs">
+                    <div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span class="font-medium text-gray-700">د. أحمد محمد</span>
+                        <div class="text-gray-500">
+                            <span class="mr-2">🆔 DOC001</span>
+                            <span>🔑 demo123</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span class="font-medium text-gray-700">د. فاطمة علي</span>
+                        <div class="text-gray-500">
+                            <span class="mr-2">🆔 DOC002</span>
+                            <span>🔑 demo123</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span class="font-medium text-gray-700">د. محمد سالم</span>
+                        <div class="text-gray-500">
+                            <span class="mr-2">🆔 DOC003</span>
+                            <span>🔑 demo123</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">انسخ رقم الترخيص وكلمة المرور للتجربة</p>
+            </div>
+
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     طبيب جديد؟
@@ -471,6 +503,15 @@
     </div>
 
     <script>
+        // Demo accounts for testing
+        const demoAccounts = [
+            { license: 'DOC001', password: 'demo123', name: 'د. أحمد محمد', specialty: 'طب القلب' },
+            { license: 'DOC002', password: 'demo123', name: 'د. فاطمة علي', specialty: 'طب الأطفال' },
+            { license: 'DOC003', password: 'demo123', name: 'د. محمد سالم', specialty: 'طب عام' },
+            { license: 'DOC004', password: 'demo123', name: 'د. نورا أحمد', specialty: 'طب الأعصاب' },
+            { license: 'DOC005', password: 'demo123', name: 'د. خالد يوسف', specialty: 'جراحة العظام' }
+        ];
+
         // Modal functions
         function showLoginModal() {
             document.getElementById('loginModal').classList.remove('hidden');
@@ -507,8 +548,25 @@
             const password = document.getElementById('password').value;
 
             if (license && password) {
-                hideLoginModal();
-                showSuccessMessage('مرحباً بك في طريقتي العلاجي!');
+                // Check demo accounts
+                const demoAccount = demoAccounts.find(acc => acc.license === license && acc.password === password);
+
+                if (demoAccount) {
+                    hideLoginModal();
+                    showSuccessMessage(`مرحباً بك ${demoAccount.name} - ${demoAccount.specialty}`);
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    hideLoginModal();
+                    showSuccessMessage('مرحباً بك في طريقتي العلاجي!');
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                }
+
                 document.getElementById('license').value = '';
                 document.getElementById('password').value = '';
             }
@@ -554,6 +612,16 @@
         function handleForgotPassword() {
             hideLoginModal();
             showSuccessMessage('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
+        }
+
+        function quickDemo() {
+            showLoginModal();
+            // Auto-fill demo account
+            setTimeout(() => {
+                document.getElementById('license').value = 'DOC001';
+                document.getElementById('password').value = 'demo123';
+                showSuccessMessage('تم ملء البيانات التجريبية - اضغط "دخول المنصة"');
+            }, 100);
         }
 
         function showSuccessMessage(message) {

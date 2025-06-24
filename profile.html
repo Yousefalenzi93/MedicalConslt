@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي - طريقتي العلاجي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'arabic': ['Cairo', 'Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        },
+                        medical: {
+                            50: '#f0f9ff',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity">
+                        <div class="w-10 h-10 bg-medical-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">ط</span>
+                        </div>
+                        <h1 class="mr-3 text-xl font-bold text-gray-800">طريقتي العلاجي</h1>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <a href="dashboard.html" class="text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">
+                        📊 لوحة التحكم
+                    </a>
+                    <a href="profile.html" class="bg-blue-100 text-blue-700 px-3 py-2 rounded-lg transition-colors">
+                        👤 الملف الشخصي
+                    </a>
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="text-sm text-gray-600">مرحباً، د. أحمد محمد</span>
+                        <a href="index.html" class="text-red-600 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors text-sm">
+                            خروج
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="min-h-screen bg-gray-50 py-8">
+        <div class="max-w-4xl mx-auto px-4">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">الملف الشخصي</h1>
+                <p class="text-gray-600">إدارة معلوماتك الشخصية والمهنية</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Profile Picture & Basic Info -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="text-center">
+                            <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-blue-600 text-4xl">👨‍⚕️</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900">د. أحمد محمد</h3>
+                            <p class="text-gray-600">طب القلب</p>
+                            <p class="text-sm text-gray-500 mt-1">رقم الترخيص: DOC001</p>
+                            
+                            <button class="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                                📷 تغيير الصورة
+                            </button>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <h4 class="font-medium text-gray-900 mb-3">إحصائيات سريعة</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">الاستشارات</span>
+                                    <span class="font-medium">45</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">التقييم</span>
+                                    <span class="font-medium">⭐ 4.8</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">سنوات الخبرة</span>
+                                    <span class="font-medium">10 سنوات</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Information -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">المعلومات التفصيلية</h3>
+                            <button 
+                                id="editBtn"
+                                onclick="toggleEdit()"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                ✏️ تعديل
+                            </button>
+                        </div>
+
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Personal Information -->
+                                <div>
+                                    <h4 class="font-medium text-gray-900 mb-4">المعلومات الشخصية</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
+                                            <input
+                                                type="text"
+                                                id="name"
+                                                value="د. أحمد محمد"
+                                                disabled
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+                                            <input
+                                                type="email"
+                                                id="email"
+                                                value="ahmed.mohamed@hospital.com"
+                                                disabled
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
+                                            <input
+                                                type="tel"
+                                                id="phone"
+                                                value="+966 50 123 4567"
+                                                disabled
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Professional Information -->
+                                <div>
+                                    <h4 class="font-medium text-gray-900 mb-4">المعلومات المهنية</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">التخصص</label>
+                                            <select
+                                                id="specialty"
+                                                disabled
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                                            >
+                                                <option value="طب القلب" selected>طب القلب</option>
+                                                <option value="طب عام">طب عام</option>
+                                                <option value="طب الأطفال">طب الأطفال</option>
+                                                <option value="طب الأعصاب">طب الأعصاب</option>
+                                                <option value="جراحة العظام">جراحة العظام</option>
+                                                <option value="طب العيون">طب العيون</option>
+                                                <option value="طب الأسنان">طب الأسنان</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">رقم الترخيص</label>
+                                            <input
+                                                type="text"
+                                                value="DOC001"
+                                                disabled
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                                            />
+                                            <p class="text-xs text-gray-500">لا يمكن تعديل رقم الترخيص</p>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">المستشفى/العيادة</label>
+                                            <input
+                                                type="text"
+                                                id="hospital"
+                                                value="مستشفى الملك فيصل التخصصي"
+                                                disabled
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">سنوات الخبرة</label>
+                                            <input
+                                                type="text"
+                                                id="experience"
+                                                value="10 سنوات"
+                                                disabled
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bio Section -->
+                            <div class="mt-6 pt-6 border-t border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-4">السيرة الذاتية والخبرات</h4>
+                                <textarea
+                                    id="bio"
+                                    rows="4"
+                                    disabled
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                                    placeholder="اكتب نبذة عن خبراتك ومؤهلاتك المهنية..."
+                                >طبيب متخصص في طب القلب مع خبرة واسعة في التشخيص والعلاج. حاصل على البورد السعودي في طب القلب وزمالة في جراحة القلب من جامعة هارفارد. أعمل حالياً في مستشفى الملك فيصل التخصصي ولدي خبرة 10 سنوات في المجال.</textarea>
+                            </div>
+
+                            <!-- Save/Cancel Buttons (Hidden by default) -->
+                            <div id="editButtons" class="mt-6 pt-6 border-t border-gray-200 hidden">
+                                <div class="flex space-x-4 space-x-reverse">
+                                    <button 
+                                        onclick="saveChanges()"
+                                        class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                                    >
+                                        💾 حفظ التغييرات
+                                    </button>
+                                    <button 
+                                        onclick="cancelEdit()"
+                                        class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                                    >
+                                        ❌ إلغاء
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Settings -->
+                    <div class="mt-6 bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-medium text-gray-900">إعدادات الحساب</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">الإشعارات</h4>
+                                        <p class="text-sm text-gray-600">تلقي إشعارات الاستشارات والرسائل</p>
+                                    </div>
+                                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                        مفعل
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">الخصوصية</h4>
+                                        <p class="text-sm text-gray-600">إظهار الملف الشخصي للأطباء الآخرين</p>
+                                    </div>
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded-lg">
+                                        عام
+                                    </button>
+                                </div>
+
+                                <div class="pt-4 border-t border-gray-200">
+                                    <button class="text-red-600 hover:text-red-700 font-medium">
+                                        🗑️ حذف الحساب
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isEditing = false;
+        const originalValues = {};
+
+        function toggleEdit() {
+            isEditing = !isEditing;
+            const editBtn = document.getElementById('editBtn');
+            const editButtons = document.getElementById('editButtons');
+            const inputs = ['name', 'email', 'phone', 'specialty', 'hospital', 'experience', 'bio'];
+
+            if (isEditing) {
+                // Store original values
+                inputs.forEach(id => {
+                    const element = document.getElementById(id);
+                    originalValues[id] = element.value;
+                    element.disabled = false;
+                });
+
+                editBtn.innerHTML = '❌ إلغاء';
+                editBtn.className = 'bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors';
+                editButtons.classList.remove('hidden');
+            } else {
+                cancelEdit();
+            }
+        }
+
+        function saveChanges() {
+            isEditing = false;
+            const editBtn = document.getElementById('editBtn');
+            const editButtons = document.getElementById('editButtons');
+            const inputs = ['name', 'email', 'phone', 'specialty', 'hospital', 'experience', 'bio'];
+
+            inputs.forEach(id => {
+                document.getElementById(id).disabled = true;
+            });
+
+            editBtn.innerHTML = '✏️ تعديل';
+            editBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors';
+            editButtons.classList.add('hidden');
+
+            // Show success message
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            messageEl.textContent = 'تم حفظ التغييرات بنجاح!';
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                if (document.body.contains(messageEl)) {
+                    document.body.removeChild(messageEl);
+                }
+            }, 3000);
+        }
+
+        function cancelEdit() {
+            isEditing = false;
+            const editBtn = document.getElementById('editBtn');
+            const editButtons = document.getElementById('editButtons');
+            const inputs = ['name', 'email', 'phone', 'specialty', 'hospital', 'experience', 'bio'];
+
+            // Restore original values
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (originalValues[id] !== undefined) {
+                    element.value = originalValues[id];
+                }
+                element.disabled = true;
+            });
+
+            editBtn.innerHTML = '✏️ تعديل';
+            editBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors';
+            editButtons.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

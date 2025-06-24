@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المدير - طريقتي العلاجي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'arabic': ['Cairo', 'Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        },
+                        medical: {
+                            50: '#f0f9ff',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1'
+                        },
+                        admin: {
+                            50: '#fef2f2',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .admin-warning { 
+            background: linear-gradient(45deg, #fee2e2, #fecaca);
+            border: 2px solid #f87171;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Security Check -->
+    <script>
+        // Simple security check - in real app, this would be server-side
+        const isAdmin = sessionStorage.getItem('userType') === 'admin';
+        if (!isAdmin) {
+            alert('⚠️ غير مصرح لك بالوصول لهذه الصفحة');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity">
+                        <div class="w-10 h-10 bg-admin-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">⚙️</span>
+                        </div>
+                        <h1 class="mr-3 text-xl font-bold text-gray-800">طريقتي العلاجي - المدير</h1>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="admin-warning px-3 py-2 rounded-lg">
+                        <span class="text-admin-700 font-medium text-sm">⚠️ وضع المدير</span>
+                    </div>
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="text-sm text-admin-600 font-medium">مرحباً، مدير المنصة</span>
+                        <a href="index.html" onclick="logout()" class="text-red-600 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors text-sm">
+                            خروج
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="min-h-screen bg-gray-50 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">لوحة تحكم المدير</h1>
+                <p class="text-gray-600">مرحباً مدير المنصة - إدارة شاملة لمنصة طريقتي العلاجي</p>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="mb-8">
+                <nav class="flex space-x-8 space-x-reverse">
+                    <button onclick="showTab('overview')" id="tab-overview" class="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-admin-100 text-admin-700">
+                        <span class="ml-2">📊</span>
+                        نظرة عامة
+                    </button>
+                    <button onclick="showTab('doctors')" id="tab-doctors" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
+                        <span class="ml-2">👥</span>
+                        إدارة الأطباء
+                    </button>
+                    <button onclick="showTab('requests')" id="tab-requests" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
+                        <span class="ml-2">📋</span>
+                        طلبات الانضمام
+                    </button>
+                    <button onclick="showTab('reports')" id="tab-reports" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
+                        <span class="ml-2">📈</span>
+                        التقارير
+                    </button>
+                    <button onclick="showTab('settings')" id="tab-settings" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
+                        <span class="ml-2">⚙️</span>
+                        الإعدادات
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="content-overview" class="tab-content">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <span class="text-blue-600 text-xl">👥</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">إجمالي الأطباء</p>
+                                <p class="text-2xl font-bold text-gray-900">2,847</p>
+                                <p class="text-xs text-green-600">+12.5% هذا الشهر</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <span class="text-green-600 text-xl">💬</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">إجمالي الاستشارات</p>
+                                <p class="text-2xl font-bold text-gray-900">15,420</p>
+                                <p class="text-xs text-green-600">+8.3% هذا الشهر</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <span class="text-purple-600 text-xl">🟢</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">المستخدمين النشطين</p>
+                                <p class="text-2xl font-bold text-gray-900">342</p>
+                                <p class="text-xs text-gray-500">الآن</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <span class="text-orange-600 text-xl">📋</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">طلبات الانضمام</p>
+                                <p class="text-2xl font-bold text-gray-900">23</p>
+                                <p class="text-xs text-orange-600">في الانتظار</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Recent Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Growth Chart -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">نمو المنصة</h3>
+                        <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="text-4xl mb-2">📈</div>
+                                <p class="text-gray-600">رسم بياني لنمو المنصة</p>
+                                <p class="text-sm text-gray-500">سيتم إضافة المخططات قريباً</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">الأنشطة الحديثة</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center ml-3">
+                                    <span class="text-blue-600 text-sm">🔑</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">تسجيل دخول</p>
+                                    <p class="text-xs text-gray-600">د. أحمد محمد • منذ 5 دقائق</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center ml-3">
+                                    <span class="text-green-600 text-sm">💬</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">استشارة جديدة</p>
+                                    <p class="text-xs text-gray-600">د. فاطمة علي • منذ 15 دقيقة</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center ml-3">
+                                    <span class="text-purple-600 text-sm">👤</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">تحديث الملف الشخصي</p>
+                                    <p class="text-xs text-gray-600">د. محمد سالم • منذ 30 دقيقة</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center ml-3">
+                                    <span class="text-orange-600 text-sm">📝</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">طلب انضمام جديد</p>
+                                    <p class="text-xs text-gray-600">د. سارة أحمد • منذ ساعة</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctors Management Tab -->
+            <div id="content-doctors" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">إدارة الأطباء</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الطبيب</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التخصص</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ التسجيل</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الاستشارات</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">د. أحمد محمد</div>
+                                                <div class="text-sm text-gray-500">DOC001</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">طب القلب</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">45</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                نشط
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2 space-x-reverse">
+                                            <button onclick="viewDoctor(1)" class="text-blue-600 hover:text-blue-900">
+                                                👁️ عرض
+                                            </button>
+                                            <button onclick="toggleDoctorStatus(1)" class="text-orange-600 hover:text-orange-900">
+                                                ⏸️ إيقاف
+                                            </button>
+                                            <button onclick="deleteDoctor(1)" class="text-red-600 hover:text-red-900">
+                                                🗑️ حذف
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- More doctor rows would be here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requests Tab -->
+            <div id="content-requests" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">طلبات الانضمام المعلقة</h3>
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">د. سارة أحمد</h4>
+                                    <p class="text-sm text-gray-600">طب الجلدية • DOC006</p>
+                                    <p class="text-sm text-gray-600">sara@example.com • +966501234567</p>
+                                    <p class="text-xs text-gray-500">تاريخ التقديم: 2024-06-20</p>
+                                </div>
+                                <div class="space-x-2 space-x-reverse">
+                                    <button onclick="approveRequest(1)" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                        ✅ موافقة
+                                    </button>
+                                    <button onclick="rejectRequest(1)" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                                        ❌ رفض
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- More requests would be here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="content-reports" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">التقارير والتحليلات</h3>
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">📊</div>
+                        <p class="text-gray-600">قسم التقارير قيد التطوير</p>
+                        <p class="text-sm text-gray-500">سيتم إضافة تقارير مفصلة قريباً</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="content-settings" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">إعدادات النظام</h3>
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">⚙️</div>
+                        <p class="text-gray-600">إعدادات النظام قيد التطوير</p>
+                        <p class="text-sm text-gray-500">سيتم إضافة إعدادات شاملة قريباً</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requests Tab -->
+            <div id="content-requests" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">طلبات الانضمام المعلقة</h3>
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">د. سارة أحمد</h4>
+                                    <p class="text-sm text-gray-600">طب الجلدية • DOC006</p>
+                                    <p class="text-sm text-gray-600">sara@example.com • +966501234567</p>
+                                    <p class="text-xs text-gray-500">تاريخ التقديم: 2024-06-20</p>
+                                </div>
+                                <div class="space-x-2 space-x-reverse">
+                                    <button onclick="approveRequest(1)" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                        ✅ موافقة
+                                    </button>
+                                    <button onclick="rejectRequest(1)" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                                        ❌ رفض
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">د. عمر محمد</h4>
+                                    <p class="text-sm text-gray-600">طب العيون • DOC007</p>
+                                    <p class="text-sm text-gray-600">omar@example.com • +966507654321</p>
+                                    <p class="text-xs text-gray-500">تاريخ التقديم: 2024-06-21</p>
+                                </div>
+                                <div class="space-x-2 space-x-reverse">
+                                    <button onclick="approveRequest(2)" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                        ✅ موافقة
+                                    </button>
+                                    <button onclick="rejectRequest(2)" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                                        ❌ رفض
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">د. ليلى حسن</h4>
+                                    <p class="text-sm text-gray-600">الطب النفسي • DOC008</p>
+                                    <p class="text-sm text-gray-600">layla@example.com • +966509876543</p>
+                                    <p class="text-xs text-gray-500">تاريخ التقديم: 2024-06-22</p>
+                                </div>
+                                <div class="space-x-2 space-x-reverse">
+                                    <button onclick="approveRequest(3)" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                        ✅ موافقة
+                                    </button>
+                                    <button onclick="rejectRequest(3)" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                                        ❌ رفض
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="content-reports" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">التقارير والتحليلات</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-blue-900 mb-2">📊 تقرير يومي</h4>
+                            <p class="text-sm text-blue-700">تسجيلات دخول اليوم: 156</p>
+                            <p class="text-sm text-blue-700">استشارات جديدة: 23</p>
+                            <p class="text-sm text-blue-700">طلبات انضمام: 3</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-green-900 mb-2">📈 تقرير شهري</h4>
+                            <p class="text-sm text-green-700">أطباء جدد: 47</p>
+                            <p class="text-sm text-green-700">نمو الاستشارات: +12.5%</p>
+                            <p class="text-sm text-green-700">معدل الرضا: 4.7/5</p>
+                        </div>
+                    </div>
+                    <div class="text-center py-8">
+                        <div class="text-4xl mb-4">📊</div>
+                        <p class="text-gray-600">تقارير تفصيلية قيد التطوير</p>
+                        <p class="text-sm text-gray-500">سيتم إضافة مخططات ورسوم بيانية قريباً</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="content-settings" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">إعدادات النظام</h3>
+                    <div class="space-y-6">
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="font-medium text-gray-900 mb-2">إعدادات عامة</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">تفعيل التسجيل الجديد</span>
+                                    <button class="bg-green-500 text-white px-3 py-1 rounded text-sm">مفعل</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">مراجعة طلبات الانضمام</span>
+                                    <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm">تلقائي</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">إشعارات المدير</span>
+                                    <button class="bg-green-500 text-white px-3 py-1 rounded text-sm">مفعل</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="font-medium text-gray-900 mb-2">إعدادات الأمان</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">تسجيل العمليات</span>
+                                    <button class="bg-green-500 text-white px-3 py-1 rounded text-sm">مفعل</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">التحقق الثنائي</span>
+                                    <button class="bg-orange-500 text-white px-3 py-1 rounded text-sm">معطل</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-warning p-4 rounded-lg">
+                            <h4 class="font-medium text-admin-700 mb-2">⚠️ منطقة خطر</h4>
+                            <p class="text-sm text-admin-600 mb-3">العمليات التالية تؤثر على النظام بالكامل</p>
+                            <div class="space-x-2 space-x-reverse">
+                                <button onclick="backupSystem()" class="bg-blue-600 text-white px-4 py-2 rounded text-sm">
+                                    💾 نسخ احتياطي
+                                </button>
+                                <button onclick="resetSystem()" class="bg-red-600 text-white px-4 py-2 rounded text-sm">
+                                    🔄 إعادة تعيين
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Security check
+        const isAdmin = sessionStorage.getItem('userType') === 'admin';
+        if (!isAdmin) {
+            alert('⚠️ غير مصرح لك بالوصول لهذه الصفحة');
+            window.location.href = 'index.html';
+        }
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.className = 'flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100';
+            });
+
+            // Show selected tab content
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+
+            // Add active class to selected tab
+            document.getElementById(`tab-${tabName}`).className = 'flex items-center px-3 py-2 text-sm font-medium rounded-md bg-admin-100 text-admin-700';
+        }
+
+        // Doctor management functions
+        function viewDoctor(id) {
+            const doctors = {
+                1: { name: 'د. أحمد محمد', specialty: 'طب القلب', license: 'DOC001', consultations: 45, rating: 4.8 },
+                2: { name: 'د. فاطمة علي', specialty: 'طب الأطفال', license: 'DOC002', consultations: 38, rating: 4.9 }
+            };
+
+            const doctor = doctors[id];
+            if (doctor) {
+                alert(`تفاصيل الطبيب:\nالاسم: ${doctor.name}\nالتخصص: ${doctor.specialty}\nرقم الترخيص: ${doctor.license}\nعدد الاستشارات: ${doctor.consultations}\nالتقييم: ${doctor.rating} ⭐`);
+            }
+        }
+
+        function toggleDoctorStatus(id) {
+            if (confirm('⚠️ هل أنت متأكد من تغيير حالة هذا الطبيب؟')) {
+                showSuccessMessage('تم تغيير حالة الطبيب بنجاح');
+                // In real app, update the UI here
+            }
+        }
+
+        function deleteDoctor(id) {
+            if (confirm('⚠️ تحذير: هل أنت متأكد من حذف هذا الطبيب؟\nهذا الإجراء لا يمكن التراجع عنه وسيؤثر على جميع بياناته.')) {
+                if (confirm('تأكيد نهائي: اكتب "حذف" للمتابعة') || prompt('اكتب "حذف" للتأكيد:') === 'حذف') {
+                    showSuccessMessage('تم حذف الطبيب بنجاح');
+                    // In real app, remove from UI and database
+                }
+            }
+        }
+
+        // Request management functions
+        function approveRequest(id) {
+            const requests = {
+                1: 'د. سارة أحمد',
+                2: 'د. عمر محمد',
+                3: 'د. ليلى حسن'
+            };
+
+            if (confirm(`هل تريد الموافقة على طلب انضمام ${requests[id]}؟`)) {
+                showSuccessMessage(`تم قبول طلب انضمام ${requests[id]} بنجاح`);
+                // In real app, move to doctors list and send notification
+            }
+        }
+
+        function rejectRequest(id) {
+            const requests = {
+                1: 'د. سارة أحمد',
+                2: 'د. عمر محمد',
+                3: 'د. ليلى حسن'
+            };
+
+            const reason = prompt('سبب الرفض (اختياري):');
+            if (confirm(`هل تريد رفض طلب انضمام ${requests[id]}؟`)) {
+                showSuccessMessage(`تم رفض طلب انضمام ${requests[id]}`);
+                // In real app, remove from list and send notification
+            }
+        }
+
+        // System functions
+        function backupSystem() {
+            if (confirm('هل تريد إنشاء نسخة احتياطية من النظام؟')) {
+                showSuccessMessage('جاري إنشاء النسخة الاحتياطية...');
+                setTimeout(() => {
+                    showSuccessMessage('تم إنشاء النسخة الاحتياطية بنجاح');
+                }, 3000);
+            }
+        }
+
+        function resetSystem() {
+            if (confirm('⚠️ تحذير شديد: هل تريد إعادة تعيين النظام؟\nسيتم حذف جميع البيانات!')) {
+                if (prompt('اكتب "إعادة تعيين" للتأكيد:') === 'إعادة تعيين') {
+                    alert('تم إلغاء العملية لأغراض الأمان');
+                }
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('userType');
+            showSuccessMessage('تم تسجيل الخروج بنجاح');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+
+        // Utility functions
+        function showSuccessMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+
+            setTimeout(() => {
+                if (document.body.contains(messageEl)) {
+                    document.body.removeChild(messageEl);
+                }
+            }, 3000);
+        }
+
+        function showWarningMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-4 left-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+
+            setTimeout(() => {
+                if (document.body.contains(messageEl)) {
+                    document.body.removeChild(messageEl);
+                }
+            }, 4000);
+        }
+
+        // Initialize admin session
+        sessionStorage.setItem('userType', 'admin');
+
+        // Welcome message
+        setTimeout(() => {
+            showSuccessMessage('مرحباً بك في لوحة تحكم المدير!');
+        }, 500);
+
+        // Security reminder
+        setTimeout(() => {
+            showWarningMessage('⚠️ تذكير: أنت في وضع المدير - كن حذراً مع العمليات الحساسة');
+        }, 3000);
+    </script>
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.className = 'flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100';
+            });
+            
+            // Show selected tab content
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            
+            // Add active class to selected tab
+            document.getElementById(`tab-${tabName}`).className = 'flex items-center px-3 py-2 text-sm font-medium rounded-md bg-admin-100 text-admin-700';
+        }
+
+        // Admin functions
+        function viewDoctor(id) {
+            alert(`عرض تفاصيل الطبيب #${id}`);
+        }
+
+        function toggleDoctorStatus(id) {
+            if (confirm('هل أنت متأكد من تغيير حالة هذا الطبيب؟')) {
+                showSuccessMessage('تم تغيير حالة الطبيب بنجاح');
+            }
+        }
+
+        function deleteDoctor(id) {
+            if (confirm('⚠️ هل أنت متأكد من حذف هذا الطبيب؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+                showSuccessMessage('تم حذف الطبيب بنجاح');
+            }
+        }
+
+        function approveRequest(id) {
+            showSuccessMessage('تم قبول طلب الانضمام بنجاح');
+        }
+
+        function rejectRequest(id) {
+            if (confirm('هل أنت متأكد من رفض هذا الطلب؟')) {
+                showSuccessMessage('تم رفض طلب الانضمام');
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('userType');
+            showSuccessMessage('تم تسجيل الخروج بنجاح');
+        }
+
+        function showSuccessMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                if (document.body.contains(messageEl)) {
+                    document.body.removeChild(messageEl);
+                }
+            }, 3000);
+        }
+
+        // Set admin session on load
+        sessionStorage.setItem('userType', 'admin');
+        
+        // Welcome message
+        setTimeout(() => {
+            showSuccessMessage('مرحباً بك في لوحة تحكم المدير!');
+        }, 500);
+    </script>
+</body>
+</html>
