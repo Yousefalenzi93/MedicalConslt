@@ -1,11 +1,59 @@
 [build]
-  publish = "dist"
-  command = "npm install && npm run build"
+  publish = "."
+  command = "echo 'Using static HTML files directly'"
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_FLAGS = "--legacy-peer-deps"
 
+# Static file serving
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+
+# Admin dashboard access
+[[redirects]]
+  from = "/admin-dashboard.html"
+  to = "/admin-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin-login.html"
+  to = "/admin-login.html"
+  status = 200
+
+# Doctor dashboard access
+[[redirects]]
+  from = "/dashboard.html"
+  to = "/dashboard.html"
+  status = 200
+
+# Profile page
+[[redirects]]
+  from = "/profile.html"
+  to = "/profile.html"
+  status = 200
+
+# Test pages
+[[redirects]]
+  from = "/test-login.html"
+  to = "/test-login.html"
+  status = 200
+
+[[redirects]]
+  from = "/firebase-setup.html"
+  to = "/firebase-setup.html"
+  status = 200
+
+# Main page
+[[redirects]]
+  from = "/index.html"
+  to = "/index.html"
+  status = 200
+
+# Default fallback
 [[redirects]]
   from = "/*"
   to = "/index.html"
