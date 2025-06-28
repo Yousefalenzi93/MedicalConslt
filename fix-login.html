@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إصلاح مشكلة تسجيل الدخول</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">🔧 إصلاح مشكلة تسجيل الدخول</h1>
+        
+        <!-- Quick Fix Buttons -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">حلول سريعة</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="fixDoctorLogin()" class="bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 text-lg">
+                    👨‍⚕️ إصلاح دخول الطبيب
+                </button>
+                <button onclick="fixAdminLogin()" class="bg-red-600 text-white px-6 py-4 rounded-lg hover:bg-red-700 text-lg">
+                    ⚙️ إصلاح دخول المدير
+                </button>
+            </div>
+        </div>
+
+        <!-- Test Links -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">روابط الاختبار</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="dashboard.html" class="bg-blue-600 text-white px-4 py-3 rounded-lg text-center hover:bg-blue-700">
+                    👨‍⚕️ اختبار لوحة الطبيب
+                </a>
+                <a href="admin-dashboard.html" class="bg-red-600 text-white px-4 py-3 rounded-lg text-center hover:bg-red-700">
+                    ⚙️ اختبار لوحة المدير
+                </a>
+                <a href="index.html" class="bg-gray-600 text-white px-4 py-3 rounded-lg text-center hover:bg-gray-700">
+                    🏠 الصفحة الرئيسية
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Display -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">حالة النظام</h2>
+            <div id="status-display" class="space-y-2">
+                <!-- Status will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-yellow-800 mb-4">📋 تعليمات الاستخدام</h2>
+            <ol class="list-decimal list-inside space-y-2 text-yellow-700">
+                <li>اضغط على "إصلاح دخول الطبيب" لحل مشكلة دخول الطبيب</li>
+                <li>اضغط على "إصلاح دخول المدير" لحل مشكلة دخول المدير</li>
+                <li>استخدم روابط الاختبار للتأكد من عمل النظام</li>
+                <li>إذا استمرت المشكلة، امسح بيانات المتصفح وأعد المحاولة</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status-display');
+            const statusItem = document.createElement('div');
+            statusItem.className = `p-3 rounded-lg ${
+                type === 'success' ? 'bg-green-100 text-green-800' :
+                type === 'error' ? 'bg-red-100 text-red-800' :
+                'bg-blue-100 text-blue-800'
+            }`;
+            statusItem.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+            statusDiv.appendChild(statusItem);
+            statusDiv.scrollTop = statusDiv.scrollHeight;
+        }
+
+        function fixDoctorLogin() {
+            updateStatus('🔧 بدء إصلاح دخول الطبيب...');
+            
+            try {
+                // Clear any existing data
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('userType');
+                sessionStorage.removeItem('currentUser');
+                sessionStorage.removeItem('userType');
+                
+                updateStatus('🗑️ تم مسح البيانات القديمة');
+
+                // Create doctor user
+                const doctorUser = {
+                    name: 'د. مستخدم مُصلح',
+                    license: 'FIX001',
+                    email: 'fixed@tariqi-alilaji.com',
+                    phone: '+966 50 123 4567',
+                    userType: 'doctor',
+                    specialty: 'طب عام'
+                };
+
+                // Save to both storages
+                localStorage.setItem('currentUser', JSON.stringify(doctorUser));
+                localStorage.setItem('userType', 'doctor');
+                sessionStorage.setItem('currentUser', JSON.stringify(doctorUser));
+                sessionStorage.setItem('userType', 'doctor');
+
+                updateStatus('✅ تم إصلاح دخول الطبيب بنجاح!', 'success');
+                updateStatus('👨‍⚕️ يمكنك الآن الدخول إلى لوحة الطبيب', 'success');
+
+                // Auto-redirect after 3 seconds
+                setTimeout(() => {
+                    updateStatus('🔄 توجيه تلقائي إلى لوحة الطبيب...');
+                    window.location.href = 'dashboard.html';
+                }, 3000);
+
+            } catch (error) {
+                updateStatus(`❌ خطأ في إصلاح دخول الطبيب: ${error.message}`, 'error');
+            }
+        }
+
+        function fixAdminLogin() {
+            updateStatus('🔧 بدء إصلاح دخول المدير...');
+            
+            try {
+                // Clear any existing data
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('userType');
+                sessionStorage.removeItem('currentUser');
+                sessionStorage.removeItem('userType');
+                
+                updateStatus('🗑️ تم مسح البيانات القديمة');
+
+                // Create admin user
+                const adminUser = {
+                    name: 'مدير مُصلح',
+                    license: 'ADMIN001',
+                    email: 'admin@tariqi-alilaji.com',
+                    phone: '+966 11 123 4567',
+                    userType: 'admin',
+                    specialty: 'إدارة النظام'
+                };
+
+                // Save to both storages
+                localStorage.setItem('currentUser', JSON.stringify(adminUser));
+                localStorage.setItem('userType', 'admin');
+                sessionStorage.setItem('currentUser', JSON.stringify(adminUser));
+                sessionStorage.setItem('userType', 'admin');
+
+                updateStatus('✅ تم إصلاح دخول المدير بنجاح!', 'success');
+                updateStatus('⚙️ يمكنك الآن الدخول إلى لوحة المدير', 'success');
+
+                // Auto-redirect after 3 seconds
+                setTimeout(() => {
+                    updateStatus('🔄 توجيه تلقائي إلى لوحة المدير...');
+                    window.location.href = 'admin-dashboard.html';
+                }, 3000);
+
+            } catch (error) {
+                updateStatus(`❌ خطأ في إصلاح دخول المدير: ${error.message}`, 'error');
+            }
+        }
+
+        function checkCurrentStatus() {
+            const localUser = localStorage.getItem('currentUser');
+            const localType = localStorage.getItem('userType');
+            const sessionUser = sessionStorage.getItem('currentUser');
+            const sessionType = sessionStorage.getItem('userType');
+
+            updateStatus('📊 فحص الحالة الحالية...');
+            
+            if (localUser && localType) {
+                try {
+                    const user = JSON.parse(localUser);
+                    updateStatus(`✅ localStorage: ${user.name} (${localType})`, 'success');
+                } catch (e) {
+                    updateStatus('❌ localStorage: بيانات تالفة', 'error');
+                }
+            } else {
+                updateStatus('❌ localStorage: لا توجد بيانات', 'error');
+            }
+
+            if (sessionUser && sessionType) {
+                try {
+                    const user = JSON.parse(sessionUser);
+                    updateStatus(`✅ sessionStorage: ${user.name} (${sessionType})`, 'success');
+                } catch (e) {
+                    updateStatus('❌ sessionStorage: بيانات تالفة', 'error');
+                }
+            } else {
+                updateStatus('❌ sessionStorage: لا توجد بيانات', 'error');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('🚀 تم تحميل أداة الإصلاح');
+            checkCurrentStatus();
+        });
+    </script>
+</body>
+</html>

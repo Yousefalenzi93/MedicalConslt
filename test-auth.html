@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام المصادقة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .log { 
+            background: #f3f4f6; 
+            border: 1px solid #d1d5db; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">🔍 اختبار نظام المصادقة</h1>
+        
+        <!-- Test Controls -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">أدوات الاختبار</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="testDoctorLogin()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    👨‍⚕️ اختبار دخول طبيب
+                </button>
+                <button onclick="testAdminLogin()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                    ⚙️ اختبار دخول مدير
+                </button>
+                <button onclick="clearStorage()" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+                    🗑️ مسح البيانات
+                </button>
+            </div>
+        </div>
+
+        <!-- Storage Status -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">حالة التخزين</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="font-bold text-blue-600">localStorage</h3>
+                    <div id="localStorage-status" class="log">جاري التحميل...</div>
+                </div>
+                <div>
+                    <h3 class="font-bold text-green-600">sessionStorage</h3>
+                    <div id="sessionStorage-status" class="log">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">نتائج الاختبار</h2>
+            <div id="test-results" class="space-y-2">
+                <!-- Results will appear here -->
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold mb-4">روابط التنقل</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="index.html" class="bg-gray-600 text-white px-4 py-2 rounded text-center hover:bg-gray-700">
+                    🏠 الصفحة الرئيسية
+                </a>
+                <a href="dashboard.html" class="bg-blue-600 text-white px-4 py-2 rounded text-center hover:bg-blue-700">
+                    👨‍⚕️ لوحة الطبيب
+                </a>
+                <a href="admin-dashboard.html" class="bg-red-600 text-white px-4 py-2 rounded text-center hover:bg-red-700">
+                    ⚙️ لوحة المدير
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log ${type === 'error' ? 'bg-red-100 border-red-300' : type === 'success' ? 'bg-green-100 border-green-300' : 'bg-blue-100 border-blue-300'}`;
+            logEntry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            resultsDiv.appendChild(logEntry);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function updateStorageStatus() {
+            // localStorage status
+            const localData = {
+                currentUser: localStorage.getItem('currentUser'),
+                userType: localStorage.getItem('userType')
+            };
+            document.getElementById('localStorage-status').innerHTML = 
+                `currentUser: ${localData.currentUser ? '✅ موجود' : '❌ غير موجود'}<br>` +
+                `userType: ${localData.userType || 'غير محدد'}`;
+
+            // sessionStorage status
+            const sessionData = {
+                currentUser: sessionStorage.getItem('currentUser'),
+                userType: sessionStorage.getItem('userType')
+            };
+            document.getElementById('sessionStorage-status').innerHTML = 
+                `currentUser: ${sessionData.currentUser ? '✅ موجود' : '❌ غير موجود'}<br>` +
+                `userType: ${sessionData.userType || 'غير محدد'}`;
+        }
+
+        function testDoctorLogin() {
+            log('🧪 بدء اختبار تسجيل دخول الطبيب...');
+            
+            const doctorUser = {
+                name: 'د. اختبار',
+                license: 'TEST001',
+                email: 'test@tariqi-alilaji.com',
+                phone: '+966 50 123 4567',
+                userType: 'doctor',
+                specialty: 'طب عام'
+            };
+
+            try {
+                localStorage.setItem('currentUser', JSON.stringify(doctorUser));
+                localStorage.setItem('userType', 'doctor');
+                sessionStorage.setItem('currentUser', JSON.stringify(doctorUser));
+                sessionStorage.setItem('userType', 'doctor');
+                
+                log('✅ تم حفظ بيانات الطبيب بنجاح', 'success');
+                updateStorageStatus();
+                
+                // Test reading
+                const savedUser = localStorage.getItem('currentUser');
+                const savedType = localStorage.getItem('userType');
+                
+                if (savedUser && savedType === 'doctor') {
+                    log('✅ تم قراءة البيانات بنجاح من localStorage', 'success');
+                } else {
+                    log('❌ فشل في قراءة البيانات من localStorage', 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ خطأ في حفظ بيانات الطبيب: ${error.message}`, 'error');
+            }
+        }
+
+        function testAdminLogin() {
+            log('🧪 بدء اختبار تسجيل دخول المدير...');
+            
+            const adminUser = {
+                name: 'مدير الاختبار',
+                license: 'ADMIN001',
+                email: 'admin@tariqi-alilaji.com',
+                phone: '+966 11 123 4567',
+                userType: 'admin',
+                specialty: 'إدارة النظام'
+            };
+
+            try {
+                localStorage.setItem('currentUser', JSON.stringify(adminUser));
+                localStorage.setItem('userType', 'admin');
+                sessionStorage.setItem('currentUser', JSON.stringify(adminUser));
+                sessionStorage.setItem('userType', 'admin');
+                
+                log('✅ تم حفظ بيانات المدير بنجاح', 'success');
+                updateStorageStatus();
+                
+            } catch (error) {
+                log(`❌ خطأ في حفظ بيانات المدير: ${error.message}`, 'error');
+            }
+        }
+
+        function clearStorage() {
+            log('🗑️ مسح جميع البيانات...');
+            
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userType');
+            sessionStorage.removeItem('currentUser');
+            sessionStorage.removeItem('userType');
+            
+            log('✅ تم مسح جميع البيانات', 'success');
+            updateStorageStatus();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 تم تحميل صفحة الاختبار');
+            updateStorageStatus();
+            
+            // Auto-refresh storage status every 2 seconds
+            setInterval(updateStorageStatus, 2000);
+        });
+    </script>
+</body>
+</html>

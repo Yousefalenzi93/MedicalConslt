@@ -88,6 +88,12 @@
                 <a href="admin-login.html" class="bg-gray-600 text-white hover:bg-gray-700 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg inline-block text-center">
                     🔐 دخول المدير المباشر
                 </a>
+                <a href="dashboard.html?user=doctor" class="bg-purple-600 text-white hover:bg-purple-700 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg inline-block text-center">
+                    👨‍⚕️ دخول طبيب مباشر
+                </a>
+                <a href="register.html" class="bg-green-600 text-white hover:bg-green-700 px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg inline-block text-center">
+                    📝 تسجيل طبيب جديد
+                </a>
                 <button onclick="scrollToServices()" class="border-2 border-white text-white hover:bg-white hover:text-medical-600 px-8 py-3 rounded-lg font-semibold transition-colors">
                     تعرف على المنصة
                 </button>
@@ -564,6 +570,8 @@
             const license = document.getElementById('license').value;
             const password = document.getElementById('password').value;
 
+            console.log('🔐 محاولة تسجيل دخول:', { license, hasPassword: !!password });
+
             if (license && password) {
                 // Check demo accounts
                 const demoAccount = demoAccounts.find(acc => acc.license === license && acc.password === password);
@@ -583,24 +591,61 @@
                             specialty: 'إدارة النظام'
                         };
 
+                        // حفظ في كلا المكانين للتوافق
                         localStorage.setItem('currentUser', JSON.stringify(adminUser));
                         localStorage.setItem('userType', 'admin');
+                        sessionStorage.setItem('currentUser', JSON.stringify(adminUser));
                         sessionStorage.setItem('userType', 'admin');
 
-                        showSuccessMessage(`مرحباً بك ${demoAccount.name} - مدير النظام`);
+                        console.log('✅ تم تسجيل دخول المدير بنجاح');
+                        showSuccessMessage(`مرحباً بك ${adminUser.name} - مدير النظام`);
                         setTimeout(() => {
+                            console.log('🔄 توجيه إلى لوحة تحكم المدير...');
                             window.location.href = 'admin-dashboard.html';
                         }, 2000);
                     } else {
+                        // حفظ بيانات الطبيب
+                        const doctorUser = {
+                            name: demoAccount.name,
+                            license: demoAccount.license,
+                            email: `${demoAccount.license.toLowerCase()}@tariqi-alilaji.com`,
+                            phone: '+966 50 123 4567',
+                            userType: 'doctor',
+                            specialty: demoAccount.specialty
+                        };
+
+                        // حفظ في كلا المكانين للتوافق
+                        localStorage.setItem('currentUser', JSON.stringify(doctorUser));
+                        localStorage.setItem('userType', 'doctor');
+                        sessionStorage.setItem('currentUser', JSON.stringify(doctorUser));
                         sessionStorage.setItem('userType', 'doctor');
+
+                        console.log('✅ تم تسجيل دخول الطبيب بنجاح:', doctorUser);
                         showSuccessMessage(`مرحباً بك ${demoAccount.name} - ${demoAccount.specialty}`);
                         setTimeout(() => {
+                            console.log('🔄 توجيه إلى لوحة تحكم الطبيب...');
                             window.location.href = 'dashboard.html';
                         }, 2000);
                     }
                 } else {
                     hideLoginModal();
+
+                    // إنشاء مستخدم افتراضي للاختبار
+                    const defaultUser = {
+                        name: 'د. مستخدم تجريبي',
+                        license: license || 'DOC999',
+                        email: 'test@tariqi-alilaji.com',
+                        phone: '+966 50 123 4567',
+                        userType: 'doctor',
+                        specialty: 'طب عام'
+                    };
+
+                    // حفظ في كلا المكانين للتوافق
+                    localStorage.setItem('currentUser', JSON.stringify(defaultUser));
+                    localStorage.setItem('userType', 'doctor');
+                    sessionStorage.setItem('currentUser', JSON.stringify(defaultUser));
                     sessionStorage.setItem('userType', 'doctor');
+
                     showSuccessMessage('مرحباً بك في طريقتي العلاجي!');
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
@@ -703,11 +748,50 @@
         console.log('🏥 منصة التعاون الطبي - للأطباء والعاملين الصحيين');
         console.log('👨‍⚕️ Medical Collaboration Platform - For Healthcare Professionals');
         console.log('✅ Platform loaded successfully');
-        
-        // Welcome message
-        setTimeout(() => {
-            showSuccessMessage('مرحباً بك في طريقتي العلاجي!');
-        }, 1000);
+
+        // Check for registration success
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('registered') === 'true') {
+            setTimeout(() => {
+                showSuccessMessage('تم إرسال طلب التسجيل بنجاح! سيتم مراجعته خلال 24-48 ساعة.');
+            }, 500);
+        } else {
+            // Welcome message
+            setTimeout(() => {
+                showSuccessMessage('مرحباً بك في طريقتي العلاجي!');
+            }, 1000);
+        }
+
+        // Check if user is already logged in
+        const currentUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+        const userType = localStorage.getItem('userType') || sessionStorage.getItem('userType');
+
+        if (currentUser && userType) {
+            try {
+                const user = JSON.parse(currentUser);
+                setTimeout(() => {
+                    const message = userType === 'admin' ?
+                        `مرحباً ${user.name} - أنت مسجل كمدير` :
+                        `مرحباً ${user.name} - أنت مسجل كطبيب`;
+                    showInfoMessage(message);
+                }, 2000);
+            } catch (error) {
+                console.error('خطأ في قراءة بيانات المستخدم:', error);
+            }
+        }
+
+        function showInfoMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-4 left-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+
+            setTimeout(() => {
+                if (document.body.contains(messageEl)) {
+                    document.body.removeChild(messageEl);
+                }
+            }, 4000);
+        }
     </script>
 </body>
 </html>

@@ -180,9 +180,10 @@
                     loginTime: new Date().toISOString()
                 };
                 
-                // حفظ في localStorage
+                // حفظ في كلا المكانين للتوافق
                 localStorage.setItem('currentUser', JSON.stringify(adminUser));
                 localStorage.setItem('userType', 'admin');
+                sessionStorage.setItem('currentUser', JSON.stringify(adminUser));
                 sessionStorage.setItem('userType', 'admin');
                 
                 // عرض رسالة نجاح

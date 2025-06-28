@@ -39,6 +39,28 @@
 </head>
 
 <body class="bg-gray-50">
+    <!-- Emergency Login Modal -->
+    <div id="emergencyLoginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl">👨‍⚕️</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">تسجيل دخول سريع</h2>
+                <p class="text-gray-600 mt-2">يبدو أنك لم تسجل الدخول بعد</p>
+            </div>
+
+            <div class="space-y-4">
+                <button onclick="quickDoctorLogin()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                    👨‍⚕️ دخول كطبيب تجريبي
+                </button>
+                <button onclick="goToMainPage()" class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                    🏠 العودة للصفحة الرئيسية
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-6xl mx-auto px-4 py-4">
@@ -51,13 +73,19 @@
                         <h1 class="mr-3 text-xl font-bold text-gray-800">طريقتي العلاجي</h1>
                     </a>
                 </div>
-                
+
                 <div class="flex items-center space-x-4 space-x-reverse">
                     <a href="dashboard.html" class="bg-blue-100 text-blue-700 px-3 py-2 rounded-lg transition-colors">
                         📊 لوحة التحكم
                     </a>
                     <a href="profile.html" class="text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">
                         👤 الملف الشخصي
+                    </a>
+                    <a href="test-auth.html" class="text-purple-600 hover:text-purple-800 hover:bg-purple-100 px-3 py-2 rounded-lg transition-colors">
+                        🔍 اختبار المصادقة
+                    </a>
+                    <a href="register.html" class="text-green-600 hover:text-green-800 hover:bg-green-100 px-3 py-2 rounded-lg transition-colors">
+                        📝 تسجيل طبيب جديد
                     </a>
                     <div class="flex items-center space-x-2 space-x-reverse">
                         <span class="text-sm text-gray-600">مرحباً، <span data-user-name>د. أحمد محمد</span></span>
@@ -267,17 +295,66 @@
     </div>
 
     <script>
-        // Check if user is logged in
-        function checkUserAuth() {
-            const currentUser = localStorage.getItem('currentUser');
-            const userType = localStorage.getItem('userType');
+        // Debug function to show storage contents
+        function debugStorage() {
+            console.log('🔍 محتويات التخزين:');
+            console.log('localStorage:', {
+                currentUser: localStorage.getItem('currentUser'),
+                userType: localStorage.getItem('userType')
+            });
+            console.log('sessionStorage:', {
+                currentUser: sessionStorage.getItem('currentUser'),
+                userType: sessionStorage.getItem('userType')
+            });
+        }
 
-            console.log('🔍 فحص حالة المستخدم:', { currentUser: !!currentUser, userType });
+        // Enhanced user authentication check with fallback
+        function checkUserAuth() {
+            // Debug storage contents first
+            debugStorage();
+
+            // Check both localStorage and sessionStorage for compatibility
+            let currentUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+            let userType = localStorage.getItem('userType') || sessionStorage.getItem('userType');
+
+            console.log('🔍 فحص حالة المستخدم:', {
+                currentUser: !!currentUser,
+                userType,
+                localStorage: !!localStorage.getItem('currentUser'),
+                sessionStorage: !!sessionStorage.getItem('currentUser'),
+                url: window.location.href
+            });
+
+            // Check URL parameters for direct access
+            const urlParams = new URLSearchParams(window.location.search);
+            const directAccess = urlParams.get('user');
+
+            if (directAccess === 'doctor') {
+                console.log('🔑 وصول مباشر للطبيب من الرابط');
+                // Create a default doctor user for direct access
+                const defaultDoctor = {
+                    name: 'د. مستخدم تجريبي',
+                    license: 'DOC999',
+                    email: 'test@tariqi-alilaji.com',
+                    phone: '+966 50 123 4567',
+                    userType: 'doctor',
+                    specialty: 'طب عام'
+                };
+
+                localStorage.setItem('currentUser', JSON.stringify(defaultDoctor));
+                localStorage.setItem('userType', 'doctor');
+                sessionStorage.setItem('currentUser', JSON.stringify(defaultDoctor));
+                sessionStorage.setItem('userType', 'doctor');
+
+                currentUser = JSON.stringify(defaultDoctor);
+                userType = 'doctor';
+            }
 
             if (!currentUser || userType !== 'doctor') {
                 console.log('❌ المستخدم غير مسجل أو ليس طبيب');
-                alert('⚠️ يجب تسجيل الدخول كطبيب للوصول لهذه الصفحة');
-                window.location.href = 'index.html';
+
+                // Show emergency login modal instead of alert
+                showEmergencyLoginModal();
                 return false;
             }
 
@@ -297,21 +374,83 @@
                     element.textContent = user.specialty || 'طب عام';
                 });
 
+                // Update page title and headers
+                const pageTitle = document.querySelector('h1');
+                if (pageTitle && pageTitle.textContent.includes('د. أحمد محمد')) {
+                    pageTitle.textContent = `مرحباً، ${user.name}`;
+                }
+
+                // Sync data between localStorage and sessionStorage for compatibility
+                if (!localStorage.getItem('currentUser')) {
+                    localStorage.setItem('currentUser', currentUser);
+                    localStorage.setItem('userType', userType);
+                }
+                if (!sessionStorage.getItem('currentUser')) {
+                    sessionStorage.setItem('currentUser', currentUser);
+                    sessionStorage.setItem('userType', userType);
+                }
+
                 return true;
             } catch (error) {
                 console.error('❌ خطأ في قراءة بيانات المستخدم:', error);
+                // Clear both storages
                 localStorage.removeItem('currentUser');
                 localStorage.removeItem('userType');
+                sessionStorage.removeItem('currentUser');
+                sessionStorage.removeItem('userType');
                 window.location.href = 'index.html';
                 return false;
             }
         }
 
-        // Logout function
+        // Emergency login functions
+        function showEmergencyLoginModal() {
+            console.log('🚨 عرض نموذج تسجيل الدخول الطارئ');
+            document.getElementById('emergencyLoginModal').classList.remove('hidden');
+        }
+
+        function hideEmergencyLoginModal() {
+            document.getElementById('emergencyLoginModal').classList.add('hidden');
+        }
+
+        function quickDoctorLogin() {
+            console.log('⚡ تسجيل دخول سريع كطبيب');
+
+            const doctorUser = {
+                name: 'د. مستخدم تجريبي',
+                license: 'QUICK001',
+                email: 'quick@tariqi-alilaji.com',
+                phone: '+966 50 123 4567',
+                userType: 'doctor',
+                specialty: 'طب عام'
+            };
+
+            // Save to both storages
+            localStorage.setItem('currentUser', JSON.stringify(doctorUser));
+            localStorage.setItem('userType', 'doctor');
+            sessionStorage.setItem('currentUser', JSON.stringify(doctorUser));
+            sessionStorage.setItem('userType', 'doctor');
+
+            console.log('✅ تم حفظ بيانات الطبيب السريع');
+
+            hideEmergencyLoginModal();
+
+            // Reload page to apply changes
+            window.location.reload();
+        }
+
+        function goToMainPage() {
+            window.location.href = 'index.html';
+        }
+
+        // Enhanced logout function
         function logout() {
             console.log('🚪 تسجيل الخروج من لوحة التحكم...');
+
+            // Clear both storages completely
             localStorage.removeItem('currentUser');
             localStorage.removeItem('userType');
+            sessionStorage.removeItem('currentUser');
             sessionStorage.removeItem('userType');
 
             // Show logout message
@@ -325,25 +464,34 @@
             }, 1000);
         }
 
-        // Initialize page
+        // Initialize page with delay to ensure data is saved
         document.addEventListener('DOMContentLoaded', function() {
             console.log('📄 تحميل صفحة لوحة التحكم...');
 
-            if (checkUserAuth()) {
-                // Show welcome message
-                setTimeout(() => {
-                    const messageEl = document.createElement('div');
-                    messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-                    messageEl.textContent = 'مرحباً بك في لوحة التحكم!';
-                    document.body.appendChild(messageEl);
+            // Add a small delay to ensure localStorage/sessionStorage is ready
+            setTimeout(() => {
+                console.log('🔍 بدء فحص المصادقة...');
 
+                if (checkUserAuth()) {
+                    console.log('✅ تم التحقق من المصادقة بنجاح');
+
+                    // Show welcome message
                     setTimeout(() => {
-                        if (document.body.contains(messageEl)) {
-                            document.body.removeChild(messageEl);
-                        }
-                    }, 3000);
-                }, 500);
-            }
+                        const messageEl = document.createElement('div');
+                        messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                        messageEl.textContent = 'مرحباً بك في لوحة التحكم!';
+                        document.body.appendChild(messageEl);
+
+                        setTimeout(() => {
+                            if (document.body.contains(messageEl)) {
+                                document.body.removeChild(messageEl);
+                            }
+                        }, 3000);
+                    }, 500);
+                } else {
+                    console.log('❌ فشل في التحقق من المصادقة');
+                }
+            }, 100); // Small delay to ensure storage is ready
         });
     </script>
 </body>
