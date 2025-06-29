@@ -103,8 +103,9 @@
         <div class="max-w-7xl mx-auto px-4">
             <!-- Welcome Section -->
             <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">مرحباً، د. أحمد محمد</h1>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">مرحباً، <span data-user-name>د. أحمد محمد</span></h1>
                 <p class="text-gray-600">نظرة عامة على نشاطك في المنصة</p>
+                <p class="text-sm text-gray-500 mt-1">التخصص: <span data-user-specialty>طب القلب</span></p>
             </div>
 
             <!-- Stats Cards -->
@@ -207,7 +208,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="w-full mt-4 text-blue-600 hover:text-blue-700 font-medium">
+                            <button onclick="viewAllConsultations()" class="w-full mt-4 text-blue-600 hover:text-blue-700 font-medium">
                                 عرض جميع الاستشارات
                             </button>
                         </div>
@@ -222,10 +223,10 @@
                             <h3 class="text-lg font-medium text-gray-900">إجراءات سريعة</h3>
                         </div>
                         <div class="p-6 space-y-3">
-                            <button class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                            <button onclick="newConsultation()" class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
                                 💬 استشارة جديدة
                             </button>
-                            <button class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            <button onclick="scheduleAppointment()" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                                 📅 جدولة موعد
                             </button>
                             <a href="profile.html" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
@@ -257,7 +258,7 @@
                                     <p class="text-xs text-gray-500">منذ ساعتين</p>
                                 </div>
                             </div>
-                            <button class="w-full mt-4 text-blue-600 hover:text-blue-700 font-medium text-sm">
+                            <button onclick="viewAllMessages()" class="w-full mt-4 text-blue-600 hover:text-blue-700 font-medium text-sm">
                                 عرض جميع الرسائل
                             </button>
                         </div>
@@ -374,11 +375,10 @@
                     element.textContent = user.specialty || 'طب عام';
                 });
 
-                // Update page title and headers
-                const pageTitle = document.querySelector('h1');
-                if (pageTitle && pageTitle.textContent.includes('د. أحمد محمد')) {
-                    pageTitle.textContent = `مرحباً، ${user.name}`;
-                }
+                // Update page title
+                document.title = `لوحة التحكم - ${user.name || 'طبيب'}`;
+
+                console.log('✅ تم تحديث بيانات المستخدم في الصفحة');
 
                 // Sync data between localStorage and sessionStorage for compatibility
                 if (!localStorage.getItem('currentUser')) {
@@ -493,6 +493,283 @@
                 }
             }, 100); // Small delay to ensure storage is ready
         });
+
+        // Quick Actions Functions
+        function newConsultation() {
+            console.log('💬 بدء استشارة جديدة');
+
+            // Create consultation modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-white text-2xl">💬</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">استشارة جديدة</h2>
+                        <p class="text-gray-600 mt-2">ابدأ استشارة طبية جديدة</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">اسم المريض</label>
+                            <input type="text" id="patientName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المريض">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">نوع الاستشارة</label>
+                            <select id="consultationType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">اختر نوع الاستشارة</option>
+                                <option value="عامة">استشارة عامة</option>
+                                <option value="طارئة">استشارة طارئة</option>
+                                <option value="متابعة">متابعة</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">وصف الحالة</label>
+                            <textarea id="caseDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="اكتب وصف مختصر للحالة..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 space-x-reverse mt-6">
+                        <button onclick="startConsultation()" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            بدء الاستشارة
+                        </button>
+                        <button onclick="closeModal()" class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                            إلغاء
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            window.currentModal = modal;
+        }
+
+        function scheduleAppointment() {
+            console.log('📅 جدولة موعد جديد');
+
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-white text-2xl">📅</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">جدولة موعد</h2>
+                        <p class="text-gray-600 mt-2">حدد موعد للمريض</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">اسم المريض</label>
+                            <input type="text" id="appointmentPatient" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" placeholder="أدخل اسم المريض">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">التاريخ</label>
+                            <input type="date" id="appointmentDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">الوقت</label>
+                            <input type="time" id="appointmentTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">نوع الموعد</label>
+                            <select id="appointmentType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">اختر نوع الموعد</option>
+                                <option value="كشف">كشف عام</option>
+                                <option value="متابعة">متابعة</option>
+                                <option value="استشارة">استشارة</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 space-x-reverse mt-6">
+                        <button onclick="confirmAppointment()" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                            تأكيد الموعد
+                        </button>
+                        <button onclick="closeModal()" class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                            إلغاء
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            window.currentModal = modal;
+        }
+
+        function viewAllConsultations() {
+            console.log('👁️ عرض جميع الاستشارات');
+
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">جميع الاستشارات</h2>
+                        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                            <span class="text-2xl">×</span>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">أحمد محمد علي</h3>
+                                    <p class="text-sm text-gray-600">استشارة عامة - ألم في الصدر</p>
+                                    <p class="text-xs text-gray-500">اليوم، 2:30 م</p>
+                                </div>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">مكتملة</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">فاطمة سالم</h3>
+                                    <p class="text-sm text-gray-600">متابعة - ضغط الدم</p>
+                                    <p class="text-xs text-gray-500">أمس، 11:15 ص</p>
+                                </div>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">جارية</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">خالد أحمد</h3>
+                                    <p class="text-sm text-gray-600">استشارة طارئة - حمى شديدة</p>
+                                    <p class="text-xs text-gray-500">أمس، 8:45 م</p>
+                                </div>
+                                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">عاجلة</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <button onclick="closeModal()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            إغلاق
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            window.currentModal = modal;
+        }
+
+        function viewAllMessages() {
+            console.log('💬 عرض جميع الرسائل');
+
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">جميع الرسائل</h2>
+                        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                            <span class="text-2xl">×</span>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">د. سارة أحمد</h3>
+                                    <p class="text-sm text-gray-600">هل يمكنك مراجعة هذه الحالة؟</p>
+                                    <p class="text-xs text-gray-500">منذ ساعتين</p>
+                                </div>
+                                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">إدارة المنصة</h3>
+                                    <p class="text-sm text-gray-600">تحديث جديد على النظام</p>
+                                    <p class="text-xs text-gray-500">منذ 4 ساعات</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">د. محمد علي</h3>
+                                    <p class="text-sm text-gray-600">شكراً لك على المساعدة في الحالة الأخيرة</p>
+                                    <p class="text-xs text-gray-500">أمس</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <button onclick="closeModal()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            إغلاق
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            window.currentModal = modal;
+        }
+
+        function startConsultation() {
+            const patientName = document.getElementById('patientName').value;
+            const consultationType = document.getElementById('consultationType').value;
+            const caseDescription = document.getElementById('caseDescription').value;
+
+            if (!patientName || !consultationType) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            console.log('بدء الاستشارة:', { patientName, consultationType, caseDescription });
+            showSuccessMessage(`تم بدء استشارة جديدة للمريض: ${patientName}`);
+            closeModal();
+        }
+
+        function confirmAppointment() {
+            const patientName = document.getElementById('appointmentPatient').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const type = document.getElementById('appointmentType').value;
+
+            if (!patientName || !date || !time || !type) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            console.log('تأكيد الموعد:', { patientName, date, time, type });
+            showSuccessMessage(`تم تأكيد موعد ${patientName} في ${date} الساعة ${time}`);
+            closeModal();
+        }
+
+        function closeModal() {
+            if (window.currentModal) {
+                document.body.removeChild(window.currentModal);
+                window.currentModal = null;
+            }
+        }
+
+        function showSuccessMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+
+            setTimeout(() => {
+                if (document.body.contains(messageEl)) {
+                    document.body.removeChild(messageEl);
+                }
+            }, 3000);
+        }
     </script>
 </body>
 </html>

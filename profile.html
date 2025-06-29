@@ -385,17 +385,13 @@
             editBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors';
             editButtons.classList.add('hidden');
 
-            // Show success message
-            const messageEl = document.createElement('div');
-            messageEl.className = 'fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-            messageEl.textContent = 'تم حفظ التغييرات بنجاح!';
-            document.body.appendChild(messageEl);
-            
-            setTimeout(() => {
-                if (document.body.contains(messageEl)) {
-                    document.body.removeChild(messageEl);
-                }
-            }, 3000);
+            // Save to storage first
+            saveUserProfile();
+
+            // Update original values for future cancellation
+            inputs.forEach(id => {
+                originalValues[id] = document.getElementById(id).value;
+            });
         }
 
         function cancelEdit() {
@@ -417,8 +413,7 @@
             editBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors';
             editButtons.classList.add('hidden');
 
-            // Save to storage
-            saveUserProfile();
+            // Don't save when canceling - just restore original values
         }
 
         // Authentication System
